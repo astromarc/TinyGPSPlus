@@ -1,5 +1,5 @@
 /*
-TinyGPS++ - a small GPS library for Arduino providing universal NMEA parsing
+TinyGPSPlus - a small GPS library for Arduino providing universal NMEA parsing
 Based on work by and "distanceBetween" and "courseTo" courtesy of Maarten Lamers.
 Suggestion to add satellites, courseTo(), and cardinal() by Matt Monson.
 Location precision improvements suggested by Wayne Holder.
@@ -21,16 +21,19 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#include "TinyGPS++.h"
+#include "TinyGPSPlus.h"
 
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
 
 #define _GPRMCterm   "GPRMC"
-#define _GPGGAterm   "GPGGA"
+#define _GPGGAterm   "GAGGA"
 #define _GNRMCterm   "GNRMC"
 #define _GNGGAterm   "GNGGA"
+#define _GARMCterm   "GARMC"
+#define _GAGGAterm   "GAGGA"
+
 
 TinyGPSPlus::TinyGPSPlus()
   :  parity(0)
@@ -49,7 +52,6 @@ TinyGPSPlus::TinyGPSPlus()
   term[0] = '\0';
 }
 
-//
 // public methods
 //
 
@@ -209,9 +211,9 @@ bool TinyGPSPlus::endOfTermHandler()
   // the first term determines the sentence type
   if (curTermNumber == 0)
   {
-    if (!strcmp(term, _GPRMCterm) || !strcmp(term, _GNRMCterm))
+    if (!strcmp(term, _GPRMCterm) || !strcmp(term, _GNRMCterm) || !strcmp(term, _GARMCterm))
       curSentenceType = GPS_SENTENCE_GPRMC;
-    else if (!strcmp(term, _GPGGAterm) || !strcmp(term, _GNGGAterm))
+    else if (!strcmp(term, _GPGGAterm) || !strcmp(term, _GNGGAterm) || !strcmp(term, _GAGGAterm))
       curSentenceType = GPS_SENTENCE_GPGGA;
     else
       curSentenceType = GPS_SENTENCE_OTHER;
